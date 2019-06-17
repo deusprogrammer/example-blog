@@ -1,0 +1,19 @@
+version: '2'
+services:
+  blog-db:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_DATABASE=example-blog
+    volumes:
+      - ~/data/db/blog:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+  example-blog:
+    build: ./example-blog-service-springboot
+    environment:
+      - MONGO_DB_URI=mongodb://blog-db/example-blog?retryWrites=true
+    ports: 
+      - 8080:8080
